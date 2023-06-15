@@ -1,0 +1,326 @@
+---
+title: "DCS 307: Simulation--Random Number Generator Streams"
+author: "Eric Zhao"
+date: "2023-02-01"
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+#load-in
+library(simEd)
+```
+
+### Prep
+
+\
+
+```{r}
+#function built
+myArr1<-function(){rexp(1, 1)}
+myArr2<-function(){rexp(1, 11/10)}
+mySvc1<-function(){rexp(1, 10/9)}
+
+#simulation
+output11<-ssq(maxArrivals = 20, interarrivalFcn = myArr1, serviceFcn = mySvc1, seed = 8675309, saveAllStats = TRUE, showOutput = FALSE)
+
+output12<-ssq(maxArrivals = 20, interarrivalFcn = myArr2, serviceFcn = mySvc1, seed = 8675309, saveAllStats = TRUE, showOutput = FALSE)
+```
+
+### Results
+
+```{r}
+print(output11$interarrivalTimes)
+print(output12$interarrivalTimes)
+
+print(output11$serviceTimes)
+print(output12$serviceTimes)
+```
+
+#### Q1
+
+\
+The first ten service times from first run are:
+
+```{r}
+output11$serviceTimes[1:10]
+```
+
+#### Q2
+
+\
+The first ten service times from second run are:
+
+```{r}
+output12$serviceTimes[1:10]
+```
+
+#### Q3
+
+\
+The divergence starts from the fifth customer and the service times for each customer are: 0.5704503 and 0.3885470.
+
+#### Skylineplots
+
+\
+
+```{r}
+par(mfrow=c(2,1))
+
+indices<-seq_along(output11$numInSystemT[output11$numInSystemT<=5])
+plot(output11$numInSystemT[indices], output11$numInSystemN[indices], type="s", xlim=c(0, 5), bty="n", las=1)
+
+indices<-seq_along(output12$numInSystemT[output12$numInSystemT<=5])
+plot(output12$numInSystemT[indices], output12$numInSystemN[indices], type="s", xlim=c(0, 5), bty="n", las=1)
+
+
+```
+
+#### Q4
+
+\
+According to the skyplots, we know that there are two arrivals after the fourth arrival occur before the fourth customer's service is finished.
+
+#### Q5
+
+\
+In the second run, we can observe that there are three more arrivals after the fourth arrival before that fourth customer complete the services.
+
+#### Add 4th completion time
+
+\
+
+```{r}
+par(mfrow=c(2,1))
+
+arrivalTimes<-cumsum(output11$interarrivalTimes)
+completitionTimes<-arrivalTimes+output11$sojournTimes
+indices<-seq_along(output11$numInSystemT[output11$numInSystemT<=5])
+plot(output11$numInSystemT[indices], output11$numInSystemN[indices], type="s", xlim=c(0, 5), bty="n", las=1)
+abline(v=completitionTimes[4], lty=2, lwd = 2)
+
+arrivalTimes<-cumsum(output12$interarrivalTimes)
+completitionTimes<-arrivalTimes+output12$sojournTimes
+indices<-seq_along(output12$numInSystemT[output12$numInSystemT<=5])
+plot(output12$numInSystemT[indices], output12$numInSystemN[indices], type="s", xlim=c(0, 5), bty="n", las=1)
+abline(v=completitionTimes[4], lty=2, lwd = 2)
+```
+
+### RNG_Streams
+
+\
+
+```{r}
+set.seed(8675309)
+#The first three numbers (rate = 1) are interarrivals, the second three (rate = 10/9) are service times.
+rexp(1, 1)
+rexp(1, 1)
+rexp(1, 1)
+rexp(1, 10/9)
+rexp(1, 10/9)
+rexp(1, 10/9)
+```
+
+#### Q6
+
+\
+The arrival times(cumulative interarrival times) are 1.662, 2.885 and 3.653.
+
+#### Q7
+
+\
+The service times are 0.311, 0.278 and 0.609.
+
+```{r}
+set.seed(8675309)
+#The first three numbers (rate = 1) are interarrivals, the second three (rate = 10/9) are service times.
+rexp(1, 1)
+rexp(1, 10/9)
+rexp(1, 1)
+rexp(1, 10/9)
+rexp(1, 1)
+rexp(1, 10/9)
+```
+
+#### Q8
+
+\
+The arrival times are 1.6622, 2.4295 and 2.7381.
+
+#### Q9
+
+\
+The service times are 1.1009, 0.3115 and 0.6088.
+
+#### Using vexp() with stream option
+
+\
+
+```{r}
+set.seed(8675309)
+
+#repeat the exercise using vexp rather than rexp, and use stream 1 for interarrivals and stream 2 for service times:
+vexp(1, 1, stream = 1)
+vexp(1, 1, stream = 1)
+vexp(1, 1, stream = 1)
+vexp(1, 10/9, stream = 2)
+vexp(1, 10/9, stream = 2)
+vexp(1, 10/9, stream = 2)
+
+```
+
+#### Q10
+
+\
+The arrival times are 0.2335, 1.3117 and 2.0973.
+
+#### Q11
+
+\
+The service times are 0.0306, 0.1224 and 1.4250.
+
+#### Interleave the time generation
+
+\
+
+```{r}
+set.seed(8675309)
+
+vexp(1, 1, stream = 1)
+vexp(1, 10/9, stream = 2)
+vexp(1, 1, stream = 1)
+vexp(1, 10/9, stream = 2)
+vexp(1, 1, stream = 1)
+vexp(1, 10/9, stream = 2)
+```
+
+#### Q12
+
+\
+The arrival times are 0.23346, 1.31174 and 2.0973.
+
+#### Q13
+
+\
+The service times are 0.0306, 0.1224 and 1.4250.
+
+### Return the simulation
+
+\
+\#### Redefine process functions with streams
+
+\
+
+```{r}
+myArr1<-function(){vexp(1, 1, stream = 1)}
+myArr2<-function(){vexp(1, 11/10, stream = 1)}
+mySvc1<-function(){vexp(1, 10/9, stream = 2)}
+```
+
+#### Simulation again
+
+\
+
+```{r}
+#simulation with different arrival processes
+output11<-ssq(maxArrivals = 20, interarrivalFcn = myArr1, serviceFcn = mySvc1, seed = 8675309, saveAllStats = TRUE, showOutput = FALSE)
+
+output12<-ssq(maxArrivals = 20, interarrivalFcn = myArr2, serviceFcn = mySvc1, seed = 8675309, saveAllStats = TRUE, showOutput = FALSE)
+```
+
+#### Interarrival and service time
+
+\
+
+```{r}
+output11$interarrivalTimes
+output11$serviceTimes
+```
+
+```{r}
+output12$interarrivalTimes
+output12$serviceTimes
+```
+
+#### Q14
+
+\
+
+```{r}
+sum(output11$interarrivalTimes-output12$interarrivalTimes)
+```
+
+#### Q15
+
+\
+
+```{r}
+sum(output11$serviceTimes-output12$serviceTimess)
+```
+
+#### Rerun simulation
+
+\
+
+```{r}
+mySvc2<-function(){vexp(1, 11/10, stream = 2)}
+#simulation with different service processes
+output11<-ssq(maxArrivals = 20, interarrivalFcn = myArr1, serviceFcn = mySvc1, seed = 8675309, saveAllStats = TRUE, showOutput = FALSE)
+
+output12<-ssq(maxArrivals = 20, interarrivalFcn = myArr1, serviceFcn = mySvc2, seed = 8675309, saveAllStats = TRUE, showOutput = FALSE)
+```
+
+#### Same interarrival and different service time processes
+
+\
+
+```{r}
+output11$interarrivalTimes
+output11$serviceTimes
+
+output12$interarrivalTimes
+output12$serviceTimes
+```
+
+### Reflection / Investigation:
+
+-   **What is the default RNG used by Python? What is its period? List your source(s).**
+
+The basic function random(), generates a random float uniformly in the half-open range $0.0 \leq X < 1.0$. Python uses the Mersenne Twister as the core generator. It produces 53-bit precision floats and has a period of $2^{19937}-1$. The underlying implementation in C is both fast and threadsafe. The Mersenne Twister is one of the most extensively tested random number generators in existence. However, being completely deterministic, it is not suitable for all purposes, and is completely unsuitable for cryptographic purposes.
+
+Source:<https://docs.python.org/3/library/random.html#>
+
+-   **What is the default RNG used by R? What is its period? List your source(s).**
+
+Same as Python, the default RNG used by R is also "Mersenne-Twister" which has a period of $2^{19937}-1$.
+
+Source:<https://stat.ethz.ch/R-manual/R-devel/library/base/html/Random.html>
+
+-   **What additional RNGs are available in Python, and how do you set up code to use them? List your source(s).**
+
+In the NumPy package, there are more additional RNGs available to use. The random values produced by generators originate in so-called BitGenerators. The default in NumPy is actually PCG-64 and other options include an updated version PCG-64 DXSM, MT19937(which is the python standard RNG), Philox, and SFC64.
+
+Sources: 
+https://numpy.org/doc/stable/reference/random/generator.html
+https://numpy.org/doc/stable/reference/random/bit_generators/index.html
+https://www.pcg-random.org/
+
+
+-   **What additional RNGs are available in R, and how do you set up code to use them? List your source(s).**
+
+The other available RNGs includes--"Wichmann-Hill", "Marsaglia-Multicarry", "Super-Duper", "Knuth-TAOCP-2002", "Knuth-TAOCP", "L'Ecuyer-CMRG" and "user-supplied". You can choose to use these additional RNGs by setting argument `kind= NULL` in the function. If kind is a character string, set the R's RNG to the kind desired otherwise it use default "Mersenne-Twister" generator.
+
+Source:<https://stat.ethz.ch/R-manual/R-devel/library/base/html/Random.html>
+
+-   **Given the article posted to Lyceum last class, which of the RNGs you mention in 1-4 above are presented in the article, and how does the article describe and/or rank their relative "goodness"? Include pointers to specific passages in the article.**
+
+In the article, the following RNGs are presented: "Mersenne-Twister"(P17), PCG(P11), "Wichmann-Hill"(P8), "Marsaglia-Multicarry"(P8). However, only MT19937 and PCG-32 were actually tested and ranked. 
+
+The final ranking of all RNGs are based on rankings from both blind/statistical tests and graphical tests. For the blind test, The target is to find evidence against a specific null hypothesis--"“the sequence to be tested is random".They take the count of the
+number of tests for which the null hypothesis is not rejected for a PRNG as its merit for randomness.(P24-26) While the graphical test, the numbers are plotted in a graph to see whether any visible pattern exists or not. As period length a PRNG is expected to be very large, so, for every graphical test also, all numbers of a period can not be used; rather a set of numbers need to be generated based on some seed.(P29-30)
+
+Based on test results, MT19937-64 holds 4th place, PCG-32 holds 5th place and MT19937-32 holds 6th place(P41-46).
+

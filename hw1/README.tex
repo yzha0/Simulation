@@ -1,0 +1,118 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{article}
+\usepackage{amsmath,amssymb}
+\usepackage{lmodern}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same} % disable monospaced font for URLs
+\hypersetup{
+  pdftitle={README},
+  pdfauthor={Eric Zhao},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+
+\title{README}
+\author{Eric Zhao}
+\date{2023-01-23}
+
+\begin{document}
+\maketitle
+
+\hypertarget{uncertainty-in-figures}{%
+\subsection{Uncertainty in Figures}\label{uncertainty-in-figures}}
+
+\hypertarget{histograms}{%
+\subsubsection{Histograms}\label{histograms}}
+
+In the first row, I produce a sequence of three histograms fixing the
+number of estimate at 1000 and varying the number of rolls per estimate
+from 10, 100,to 1000. We can notice that when number of rolls is fairly
+small(N\_roll=10), distributions of P(d1+d2+d3=10) varies a lot and we
+can't even see the red dashed lines representing mean within two sds. As
+we increase the number of rolls to 100 and 1000, we notice that
+distribution of probabilities starts to converge--the bounds become much
+smaller and shape of distribution become more closer to normal
+distribution.
+
+In the second row, I produce a sequence of three histograms fixing the
+number of rolls at 1000 and varying the number of estimate from 10, 100
+to 1000. We observe that sd and mean is already settled in the first
+place. The only difference among different number of estimates is the
+shape of distribution since the sample size of estimates increases.
+
+\hypertarget{stats}{%
+\subsubsection{Stats}\label{stats}}
+
+In fist set, mean gradually settles at 0.125 and standard deviations get
+much smaller as N\_rolls increases. The quantiles also reflect the
+changes but the results are not easy to tell.
+
+For the second set, we can see both mean and standard deviations didn't
+change much since the first graph.
+
+\hypertarget{comparison-of-experiments}{%
+\subsection{Comparison of Experiments}\label{comparison-of-experiments}}
+
+Comparing the two sets of experiments, we can see the differences in
+evolution of the distribution by varying different parameters. First,
+the first row have both shape and bound change compared to second row in
+which the bound of distribution didn't change much as number of
+estimates increases.
+
+The reason I think is that number of rolls determine the bound of the
+probabilities whereas number of estimate determines the shape of the
+probability estimate distributions.
+
+\end{document}

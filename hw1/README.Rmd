@@ -1,0 +1,32 @@
+---
+title: "README"
+author: "Eric Zhao"
+date: "2023-01-23"
+output:
+  html_document:
+    df_print: paged
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Uncertainty in Figures
+
+### Histograms
+
+In the first row, I produce a sequence of three histograms fixing the number of estimate at 1000 and varying the number of rolls per estimate from 10, 100,to 1000. We can notice that when number of rolls is fairly small(N_roll=10), distributions of P(d1+d2+d3=10) varies a lot and we can't even see the red dashed lines representing mean within two sds. As we increase the number of rolls to 100 and 1000, we notice that distribution of probabilities starts to converge--the bounds become much smaller and shape of distribution become more closer to normal distribution.
+
+In the second row, I produce a sequence of three histograms fixing the number of rolls at 1000 and varying the number of estimate from 10, 100 to 1000. We observe that sd and mean is already settled in the first place. The only difference among different number of estimates is the shape of distribution since the sample size of estimates increases.
+
+### Stats
+
+In fist set, mean gradually settles at 0.125 and standard deviations get much smaller as N_rolls increases. The quantiles also reflect the changes but the results are not easy to tell.
+
+For the second set, we can see both mean and standard deviations didn't change much since the first graph.
+
+## Comparison of Experiments
+
+Comparing the two sets of experiments, we can see the differences in evolution of the distribution by varying different parameters. First, the first row have both shape and bound change compared to second row in which the bound of distribution didn't change much as number of estimates increases.
+
+The reason I think is that number of rolls determine the bound of the probabilities whereas number of estimate determines the shape of the probability estimate distributions.

@@ -1,0 +1,33 @@
+---
+title: "README"
+author: "Eric Zhao"
+date: "2023-01-30"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Experiment 1
+
+In first experiment, we have used an M/M/1 service node with exponential interarrival, exponential service times and one server. We know that the service rate $\mu$ is equals to $\frac{1}{\bar{s}}=\frac{10}{9}$. so the theoretical average sojourn time is $\frac{1}{\mu-1}=\frac{1}{\frac{10}{9}-1}=9$.
+
+## Experiment 2
+
+In second experiment, we have M/G/1 service node with exponential distribution of interarrival, gamma distribution of service times and one server. We know that the service rate is equals to $\frac{1}{k\theta}=\frac{1}{0.9}=\frac{10}{9}$.
+And we found that M/G/1 has the same theoretical average sojourn time as M/M/1. 
+
+## Experiment 3
+
+In third experiment, we have M/G/1 service node but with different parameters-- shape$k=1.05$ and scale$\theta=0.9$. So the service rate is equals to $\frac{1}{k\theta}= \frac{1}{1.05*0.9}\approx 1.0582$. And we found that this service function results in higher theoretical average sojourn time(about 20 mins) compared to last two experiments.
+
+
+## Experiment 4
+
+In the fourth experiment, we still have M/G/1 service node but with different parameters-- shape$k=1.1$ and scale$\theta= 0.9$. And we found that the service rate now becomes $\frac{1}{1.1*0.9}\approx1.0101$. And now the theoretical average sojourn time returns even higher(around 100 mins). Furthermore, I notice that the 5000 jobs is not enough to reach the "steady-state" where the simulated average sojourn time is well-below the theoretical line and this  Thus, I decide to increase the number of jobs processed in this system. I first try 10000 jobs and the statistics still looks erratic. As I continue to increase the number of jobs up to 20000, the steady-state finally reached.
+
+
+
+
+

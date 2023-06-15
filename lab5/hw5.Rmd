@@ -1,0 +1,192 @@
+---
+title: "HW 5"
+author: "Eric Zhao"
+date: "2023-02-15"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Monte Carlo Simulation
+
+### Parameters set-up
+
+```{r}
+t<-0.5 
+mu_a<-0.15
+sigma_a<-0.20
+mu_b<-0.12
+sigma_b<-0.18
+S_a_0<-100
+S_b_0<-75
+n_a<-100
+n_b<-100
+```
+
+### functions set-up
+```{r}
+##stock prices function under Geometric Brownian Motion
+S_t_GBM<- function(s_0, mu, sigma ,t){
+  s_t<-s_0*exp((mu-sigma**2/2)*t+sigma*rnorm(1, 0, sqrt(t)))
+ 
+  return(s_t)
+}
+
+##wealth function
+wealth_f<-function(n_a, mu_a, sigma_a, S_a_0, n_b, mu_b, sigma_b, S_b_0, t){
+  wealth_t<-n_a*S_t_GBM(S_a_0, mu_a, sigma_a,t)+n_b*S_t_GBM(S_b_0, mu_b, sigma_b,t)
+  
+  return(wealth_t)
+}
+
+##characteristic function
+Il<-function(w0, wt){
+  if(wt/w0<=0.9){
+    return (1)
+  }
+  else{
+    return (0)
+  }
+}
+
+##single probability generation function
+Pf<-function(w0, N, t=0.5){
+  Il_v<-rep(NA, N)
+  wt<-rep(NA, N)
+  for(i in 1:N){
+    wt[i]<-wealth_f(n_a, mu_a, sigma_a, S_a_0, n_b, mu_b, sigma_b, S_b_0, t)
+    Il_v[i]<-Il(w0, wt[i])
+
+  }
+  
+  Prob<-sum(Il_v)/N
+  return(Prob)
+}
+
+##simulation generation
+mymc1<-function(n, w0, N, t=0.5){
+  mc_ps<-rep(NA, n)
+  for(i in 1:n){
+    mc_ps[i]<-Pf(w0, N, t)
+  }
+  return(mc_ps)
+}
+```
+
+
+### Simulations
+
+
+#### n=10000(number of iterations), N=1000, t=0.5(default)
+
+
+```{r}
+W_0<-17500
+
+set.seed(021031)
+dat1<-mymc1(10000, W_0, 1000)
+hist(dat1, breaks = "fd")
+abline(v=mean(dat1), col="red", lty=2, lwd=2)
+abline(v=quantile(dat1, 0.25), col="red", lwd=2)
+abline(v=quantile(dat1, 0.75), col="red", lwd=2)
+```
+
+
+#### n=10000, N=1000, t=1
+
+\
+```{r}
+set.seed(021031)
+dat3<-mymc1(10000, W_0, 1000, 1)
+hist(dat3, breaks = "fd")
+abline(v=mean(dat3), col="red", lty=2, lwd=2)
+abline(v=quantile(dat3, 0.25), col="red", lwd=2)
+abline(v=quantile(dat3, 0.75), col="red", lwd=2)
+```
+
+
+#### n=10000, N=1000, t=1.5
+
+\
+```{r}
+set.seed(021031)
+dat6<-mymc1(10000, W_0, 1000, 1.5)
+hist(dat6, breaks = "fd")
+abline(v=mean(dat6), col="red", lty=2, lwd=2)
+abline(v=quantile(dat6, 0.25), col="red", lwd=2)
+abline(v=quantile(dat6, 0.75), col="red", lwd=2)
+```
+
+
+#### n=10000, N=1000, t=2
+
+\
+```{r}
+set.seed(021031)
+dat7<-mymc1(10000, W_0, 1000, 2)
+hist(dat7, breaks = "fd")
+abline(v=mean(dat7), col="red", lty=2, lwd=2)
+abline(v=quantile(dat7, 0.25), col="red", lwd=2)
+abline(v=quantile(dat7, 0.75), col="red", lwd=2)
+```
+
+
+#### n=10000, N=1000, t=3
+
+\
+```{r}
+set.seed(021031)
+dat2<-mymc1(10000, W_0, 1000, 3)
+hist(dat2, breaks = "fd")
+abline(v=mean(dat2), col="red", lty=2, lwd=2)
+abline(v=quantile(dat2, 0.25), col="red", lwd=2)
+abline(v=quantile(dat2, 0.75), col="red", lwd=2)
+```
+
+
+#### n=10000, N=2000, t=3
+
+\
+```{r}
+set.seed(021031)
+dat4<-mymc1(10000, W_0, 2000, 3)
+hist(dat4, breaks = "fd")
+abline(v=mean(dat4), col="red", lty=2, lwd=2)
+abline(v=quantile(dat4, 0.25), col="red", lwd=2)
+abline(v=quantile(dat4, 0.75), col="red", lwd=2)
+```
+
+
+#### n=10000, N=3000, t=3
+
+\
+```{r}
+set.seed(021031)
+dat8<-mymc1(10000, W_0, 3000, 3)
+hist(dat8, breaks = "fd")
+abline(v=mean(dat8), col="red", lty=2, lwd=2)
+abline(v=quantile(dat8, 0.25), col="red", lwd=2)
+abline(v=quantile(dat8, 0.75), col="red", lwd=2)
+```
+
+
+#### n=10000, N=5000, t=3
+
+\
+```{r}
+set.seed(021031)
+dat5<-mymc1(10000, W_0, 5000, 3)
+hist(dat5, breaks = "fd")
+abline(v=mean(dat5), col="red", lty=2, lwd=2)
+abline(v=quantile(dat5, 0.25), col="red", lwd=2)
+abline(v=quantile(dat5, 0.75), col="red", lwd=2)
+```
+
+
+### Discussion
+
+For this Monte Carlos simulation on stock portfolio, we first experiment with the T--terminal time in years. Our default time is 0.5 year and I test T=1, 1.5, 2, 3 years. We found that the mean probability that the value of your portfolio drops by more than 10% is gradually decreasing as T increases. After that, we keep T constant and test with various values for N(=1000, 2000, 3000, 5000) and we found that sample variance get much smaller since the 25% quantile and 75% quantile results in narrower range as the N get larger. 
+
+Thus, I would suggest to keep this stock portfolio since its performance is good and robust especially in longer period of time. The chance of stock value dropping more than 10% is only about 0.02.
