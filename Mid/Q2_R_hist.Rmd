@@ -1,0 +1,40 @@
+---
+title: "Q2_hist"
+author: "Eric Zhao"
+date: "2023-03-20"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## set-up
+
+```{r}
+library(simEd)
+intarr=function(){vexp(1, 0.5, 1)}
+srv_1=function(){vunif(1, 0.1, 0.2, 2)*(1+vgeom(1, 0.1, 3))}
+srv_2=function(){vunif(1, 0.1, 0.3, 2)*(1+vgeom(1, 0.1, 3))}
+
+```
+
+
+## two service models
+
+```{r}
+model_1<-ssq(maxArrivals = 1000000, interarrivalFcn = intarr, serviceFcn = srv_1, saveAllStats = TRUE, showOutput = FALSE)
+
+model_2<-ssq(maxArrivals = 1000000, interarrivalFcn = intarr, serviceFcn = srv_2, saveAllStats = TRUE, showOutput = FALSE)
+```
+
+
+## 
+```{r}
+par(mfrow=c(1,2))
+hist(model_1$serviceTimes, breaks = "fd", ylim = c(0, 50000), xlim = c(0, 30), main = "service time~unif(0.1, 0.2)")
+hist(model_2$serviceTimes, breaks = "fd", ylim = c(0, 50000), xlim = c(0, 30), main = "service time~unif(0.1, 0.3)")
+```
+
+
+

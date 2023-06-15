@@ -1,0 +1,97 @@
+---
+title: "Q1_Benchmark"
+author: "Eric Zhao"
+date: "2023-03-16"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Read-in data from py
+```{r}
+rand_values<-scan("rand.txt")
+randint_values<-scan("randint.txt")
+uniform_values<-scan("uniform.txt")
+exp_values<-scan("exp.txt")
+geom_values<-scan("geom.txt")
+gamma_values<-scan("gamma.txt")
+
+```
+
+
+## Random
+```{r}
+pdf("rand_hist.pdf")
+hist(rand_values, freq = FALSE, breaks = "fd")
+curve(dunif(x), add = TRUE, col = "red")
+dev.off()
+```
+
+## Random Int
+```{r}
+randint_hist = table(randint_values) / length(randint_values)
+pdf("randint_hist.pdf")
+
+plot(randint_hist, xlim = c(0,9), type = "h",
+xlab = "x", ylab = "f(x)", bty = "l", las = 1)
+points(0:9, dunif(0:9, 0, 10), pch = 20, col = "red")
+title("Histogram of randint(0, 10) variates")
+
+dev.off()
+```
+
+
+## Uniform
+```{r}
+pdf("unif_hist.pdf")
+
+hist(uniform_values, freq = FALSE,xlim = c(0,1), breaks = "fd",
+xlab = "x", ylab = "f(x)", bty = "l", las = 1)
+curve(dunif(x), add = TRUE,col = "red")
+
+#lines(0:10000, dunif(0:10000, 0, 1), pch = 20, col = "red")
+
+dev.off()
+```
+
+
+## Exponential
+```{r}
+pdf("exp_hist.pdf")
+
+hist(exp_values, freq = FALSE,  xlim = c(0,17), breaks = "fd",
+xlab = "x", ylab = "f(x)")
+curve(dexp(x),add = TRUE, col = "red")
+#lines(0:10000, dexp(0:10000, 2), pch = 20, col = "red")
+
+dev.off()
+```
+
+
+## Geometric
+```{r}
+geom_hist = table(geom_values) / length(geom_values)
+pdf("geom_hist.pdf")
+
+plot(geom_hist, xlim = c(0,30), type = "h",
+xlab = "x", ylab = "f(x)", bty = "l", las = 1)
+points(0:30, dgeom(0:30, 0.2), pch = 20, col = "red")
+title("Histogram of geometric(0.2) variates")
+
+dev.off()
+```
+
+
+## Gamma
+```{r}
+pdf("gamma_hist.pdf")
+
+hist(gamma_values, xlim = c(0,2), freq = FALSE, breaks = "fd",
+xlab = "x", ylab = "f(x)", bty = "l", las = 1)
+curve(dgamma(x, shape = 2, scale = 0.2), add = TRUE, col="red")
+dev.off()
+```
+
+
